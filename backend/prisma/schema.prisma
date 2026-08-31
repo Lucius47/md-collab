@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum NodeType {
+  file
+  folder
+}
+
+enum PermissionRole {
+  viewer
+  editor
+  manager
+}
+
+model User {
+  id              String   @id @default(uuid())
+  username        String   @unique
+  email           String   @unique
+  oauthProviderId String   @unique @map("oauth_provider_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  ownedNodes  Node[]       @relation("NodeOwner")
+  permissions Permission[]
+  favorites   Favorite[]
+  versions    Version[]
+
+  @@map("users")
+}
+
+model Node {
+  id           String    @id @default(uuid())
+  type         NodeType
+  name         String
+  parentId     String?   @map("parent_id")
+  ownerId      String    @map("owner_id")
+  s3Key        String?   @map("s3_key")
+  content      String?   @default("")
+  isPublic     Boolean   @default(false) @map("is_public")
+  publicLinkId String?   @unique @map("public_link_id")
+  deletedAt    DateTime? @map("deleted_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  /// Maintained by a Postgres trigger (see migration.sql) from `name` +
+  /// `content`. Prisma can read/query it via $queryRaw but never writes it.
+  searchVector Unsupported("tsvector")? @map("search_vector")
+
+  parent   Node?  @relation("NodeHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children Node[] @relation("NodeHierarchy")
+  owner    User   @relation("NodeOwner", fields: [ownerId], references: [id])
+
+  permissions Permission[]
+  favorites   Favorite[]
+  versions    Version[]
+
+  @@index([parentId])
+  @@index([ownerId])
+  @@index([deletedAt])
+  @@map("nodes")
+}
+
+model Permission {
+  nodeId String         @map("node_id")
+  userId String         @map("user_id")
+  role   PermissionRole
+
+  node Node @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([nodeId, userId])
+  @@index([userId])
+  @@map("permissions")
+}
+
+model Favorite {
+  userId    String   @map("user_id")
+  nodeId    String   @map("node_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  node Node @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, nodeId])
+  @@map("favorites")
+}
+
+model Version {
+  id        String   @id @default(uuid())
+  nodeId    String   @map("node_id")
+  s3Key     String   @map("s3_key")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  node Node @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([nodeId])
+  @@map("versions")
+}
