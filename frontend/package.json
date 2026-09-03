@@ -1,0 +1,43 @@
+{
+  "name": "markdown-collab-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@codemirror/lang-markdown": "^6.3.0",
+    "@codemirror/state": "^6.4.1",
+    "@codemirror/theme-one-dark": "^6.1.2",
+    "@codemirror/view": "^6.34.1",
+    "codemirror": "^6.0.1",
+    "dompurify": "^3.1.7",
+    "lucide-react": "^0.451.0",
+    "marked": "^13.0.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2",
+    "y-codemirror.next": "^0.3.5",
+    "y-indexeddb": "^9.0.12",
+    "y-protocols": "^1.0.6",
+    "y-websocket": "^1.5.4",
+    "yjs": "^13.6.18"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.15",
+    "@types/dompurify": "^3.0.5",
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.45",
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.6"
+  }
+}

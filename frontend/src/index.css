@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply font-sans;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-serif;
+  }
+
+  /* Visible keyboard focus everywhere, using the app accent — never suppressed. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-pine-500 ring-offset-2 ring-offset-paper dark:ring-pine-400 dark:ring-offset-night;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* CodeMirror host sizing */
+.cm-editor {
+  height: 100%;
+  font-family: theme('fontFamily.mono');
+}
+.cm-editor .cm-scroller {
+  overflow: auto;
+}
+.cm-editor.cm-focused {
+  outline: none;
+}
+
+/* Remote collaborator caret + selection styling drawn by y-codemirror.next.
+   It sets these via inline style using our awareness "color"/"colorLight"
+   fields, but the caret needs a small label — this gives it a legible tag. */
+.cm-ySelectionCaret {
+  position: relative;
+  border-left: 2px solid;
+  margin-left: -1px;
+}
+.cm-ySelectionCaretDot {
+  display: none;
+}
+.cm-ySelectionInfo {
+  @apply rounded px-1.5 py-0.5 font-sans text-[11px] font-medium text-white;
+  position: absolute;
+  top: -1.4em;
+  white-space: nowrap;
+  opacity: 0.95;
+}
