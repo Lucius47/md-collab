@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
-import { AnyZodObject } from 'zod';
+import { ZodTypeAny } from 'zod';
+// Changed from AnyZodObject
 
 interface Schemas {
-  body?: AnyZodObject;
-  params?: AnyZodObject;
-  query?: AnyZodObject;
+  body?: ZodTypeAny;
+  params?: ZodTypeAny;
+  query?: ZodTypeAny;
 }
 
 // Synchronous throws inside Express handlers/middleware are caught by
