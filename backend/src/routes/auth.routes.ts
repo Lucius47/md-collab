@@ -17,12 +17,18 @@ export const authRouter = Router();
 
 const STATE_COOKIE = 'mdc_oauth_state';
 
+// Helper for cookie options based on environment
+const getCookieOptions = () => ({
+  httpOnly: true,
+  secure: env.NODE_ENV === 'production',
+  sameSite: (env.NODE_ENV === 'production' ? 'none' : 'lax') as 'none' | 'lax',
+  ...(env.COOKIE_DOMAIN ? { domain: env.COOKIE_DOMAIN } : {}),
+});
+
 authRouter.get('/login', (_req, res) => {
   const state = crypto.randomBytes(16).toString('hex');
   res.cookie(STATE_COOKIE, state, {
-    httpOnly: true,
-    secure: env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    ...getCookieOptions(),
     maxAge: 5 * 60 * 1000,
   });
   res.redirect(buildAuthorizeUrl(state));
@@ -66,10 +72,7 @@ authRouter.get(
 
     const token = signAppToken({ sub: user.id, username: user.username });
     res.cookie(env.COOKIE_NAME, token, {
-      httpOnly: true,
-      secure: env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      domain: env.COOKIE_DOMAIN,
+      ...getCookieOptions(),
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -78,7 +81,7 @@ authRouter.get(
 );
 
 authRouter.post('/logout', (req, res) => {
-  res.clearCookie(env.COOKIE_NAME, { domain: env.COOKIE_DOMAIN });
+  res.clearCookie(env.COOKIE_NAME, getCookieOptions());
   // The frontend can optionally redirect the browser to this URL afterwards
   // to also clear the Auth0-side session (single sign-out).
   res.json({ logoutUrl: buildLogoutUrl() });
