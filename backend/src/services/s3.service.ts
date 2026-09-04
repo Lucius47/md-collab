@@ -20,9 +20,13 @@ export const s3 = new S3Client({
   },
 });
 
-export async function putText(key: string, body: string, contentType = 'text/markdown; charset=utf-8'): Promise<void> {
+export async function putText(key: string, body: string, contentType = 'text/markdown'): Promise<void> { // removed ; charset=utf-8
+
+  // Strips any charset or parameter suffixes if passed dynamically
+  const cleanContentType = contentType.split(';')[0].trim();
+
   await s3.send(
-    new PutObjectCommand({ Bucket: env.S3_BUCKET, Key: key, Body: body, ContentType: contentType })
+    new PutObjectCommand({ Bucket: env.S3_BUCKET, Key: key, Body: body, ContentType: cleanContentType })
   );
 }
 
