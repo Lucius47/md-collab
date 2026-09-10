@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Download, History, MoreHorizontal, Pencil, Share2, Star, Trash2 } from 'lucide-react';
+import { Download, History, MoreHorizontal, Pencil, Share2, Star, Trash2, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import type { ApiNode, PermissionRole } from '../../types/api';
 import type { CollabPeer, CollabStatus } from '../../hooks/useCollabDoc';
 import { PresenceBar } from './PresenceBar';
@@ -33,6 +34,7 @@ export function EditorToolbar({
   onChanged,
   onDeleted,
 }: EditorToolbarProps) {
+  const navigate = useNavigate();
   const [renaming, setRenaming] = useState(false);
   const [sharing, setSharing] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -57,6 +59,14 @@ export function EditorToolbar({
 
       <div className="flex shrink-0 items-center gap-1.5">
         <PresenceBar peers={peers} status={status} offlineReady={offlineReady} />
+
+        <button
+          onClick={() => navigate('/')}
+          title="Close note"
+          className="rounded p-1.5 text-ink-soft hover:bg-paper-surface dark:text-mist-soft dark:hover:bg-night-surface"
+        >
+          <X size={16} />
+        </button>
 
         <button
           onClick={async () => {

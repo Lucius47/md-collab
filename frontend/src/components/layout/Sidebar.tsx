@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Star, Users, Trash2, type LucideIcon } from 'lucide-react';
+import { Home, Star, Users, Trash2, type LucideIcon } from 'lucide-react';
 import { FileTree } from '../tree/FileTree';
 
 interface SidebarProps {
@@ -30,6 +30,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
   return (
     <nav className="flex h-full flex-col gap-4 px-2 pb-4 pt-1">
       <div className="space-y-0.5">
+        {navItem('/', 'Home', Home)}
         {navItem('/favorites', 'Favorites', Star)}
         {navItem('/shared', 'Shared with me', Users)}
         {navItem('/trash', 'Trash', Trash2)}
