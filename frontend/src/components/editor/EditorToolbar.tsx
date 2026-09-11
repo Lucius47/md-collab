@@ -61,14 +61,6 @@ export function EditorToolbar({
         <PresenceBar peers={peers} status={status} offlineReady={offlineReady} />
 
         <button
-          onClick={() => navigate('/')}
-          title="Close note"
-          className="rounded p-1.5 text-ink-soft hover:bg-paper-surface dark:text-mist-soft dark:hover:bg-night-surface"
-        >
-          <X size={16} />
-        </button>
-
-        <button
           onClick={async () => {
             if (isFavorite) await removeFavorite(node.id);
             else await addFavorite(node.id);
@@ -137,6 +129,14 @@ export function EditorToolbar({
             </>
           )}
         </div>
+
+        <button
+          onClick={() => navigate('/')}
+          title="Close note"
+          className="rounded p-1.5 text-ink-soft hover:bg-paper-surface dark:text-mist-soft dark:hover:bg-night-surface"
+        >
+          <X size={16} />
+        </button>
       </div>
 
       {renaming && (
