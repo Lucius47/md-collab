@@ -25,9 +25,9 @@ export interface SearchResult {
 export async function searchNodes(userId: string, query: string): Promise<SearchResult[]> {
   return prisma.$queryRaw<SearchResult[]>`
     WITH RECURSIVE visible_roots AS (
-      SELECT id FROM nodes WHERE owner_id = ${userId} AND deleted_at IS NULL
+      SELECT id FROM nodes WHERE owner_id = ${userId}::uuid AND deleted_at IS NULL
       UNION
-      SELECT node_id FROM permissions WHERE user_id = ${userId}
+      SELECT node_id FROM permissions WHERE user_id = ${userId}::uuid
     ),
     visible AS (
       SELECT id FROM visible_roots
