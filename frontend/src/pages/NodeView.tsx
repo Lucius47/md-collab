@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Download, File as FileIcon, Folder, FolderOpen, Plus } from 'lucide-react';
+import { Download, File as FileIcon, Folder, FolderOpen, Plus, Share2 } from 'lucide-react';
 import { useNode } from '../hooks/useNode';
 import { useCollabDoc } from '../hooks/useCollabDoc';
 import { useAuth } from '../context/AuthContext';
@@ -12,6 +12,7 @@ import { EmptyState } from '../components/common/EmptyState';
 import { Spinner } from '../components/common/Spinner';
 import { createNode, downloadZipUrl, ApiError } from '../lib/api';
 import { PromptModal } from '../components/common/PromptModal';
+import { ShareDialog } from '../components/sharing/ShareDialog';
 
 export function NodeView() {
   const { nodeId } = useParams();
@@ -21,6 +22,7 @@ export function NodeView() {
   const { items: favorites, reload: reloadFavorites } = useFavorites();
   const [historyOpen, setHistoryOpen] = useState(false);
   const [creating, setCreating] = useState<'file' | 'folder' | null>(null);
+  const [sharing, setSharing] = useState(false);
 
   const isFile = node?.type === 'file';
   const collab = useCollabDoc(isFile && node ? node.id : null, user);
@@ -85,6 +87,14 @@ export function NodeView() {
             >
               <Plus size={13} /> Folder
             </button>
+            {node && role === 'manager' && (
+              <button
+                onClick={() => setSharing(true)}
+                className="flex items-center gap-1 rounded bg-pine-600 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-pine-700 dark:bg-pine-500"
+              >
+                <Share2 size={13} /> Share
+              </button>
+            )}
           </div>
         </div>
 
@@ -126,6 +136,8 @@ export function NodeView() {
             }}
           />
         )}
+
+        {sharing && node && <ShareDialog node={node} onClose={() => setSharing(false)} />}
       </div>
     );
   }
